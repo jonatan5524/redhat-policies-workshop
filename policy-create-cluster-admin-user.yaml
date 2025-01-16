@@ -1,0 +1,40 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-create-cluster-admin-user
+  namespace: policies
+  labels:
+    category: access-control
+    policyset: security-policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: new-cluster-admin-secret
+          namespace: kube-system
+        type: Opaque
+        stringData:
+          username: new-cluster-admin
+          password: StrongPassword123! 
+    - objectDefinition:
+        apiVersion: user.openshift.io/v1
+        kind: User
+        metadata:
+          name: new-cluster-admin
+    - objectDefinition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: new-cluster-admin-binding
+        subjects:
+          - kind: User
+            name: new-cluster-admin
+            apiGroup: rbac.authorization.k8s.io
+        roleRef:
+          kind: ClusterRole
+          name: cluster-admin
+          apiGroup: rbac.authorization.k8s.io

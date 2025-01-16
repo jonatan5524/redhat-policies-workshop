@@ -1,0 +1,19 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-set-upgrade-channel
+  namespace: policies
+  labels:
+    category: cluster-upgrade
+    policyset: upgrade-policies
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: config.openshift.io/v1
+        kind: ClusterVersion
+        metadata:
+          name: version
+        spec:
+          channel: stable-4.16  # Replace with your desired channel
